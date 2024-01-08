@@ -1,7 +1,12 @@
 const express = require("express");
 const users = require('./MOCK_DATA.json');
+const fs = require('fs');
 const app = express();
 const port = 8000;
+
+
+// middleware plugin 
+app.use(express.urlencoded({extended : false}));
 
 // Routes
 app.get('/api/users', (req, res) => {
@@ -11,7 +16,8 @@ app.get('/api/users', (req, res) => {
 app.get('/users', (req, res) => {
     const html = `
     <ul>
-    ${users.map((user) => `<li>${user.first_name}</li>`).join("")}  // map function to get the usernames from the users obj..
+    // map function to get the usernames from the users obj..
+    ${users.map((user) => `<li>${user.first_name}</li>`).join("")} 
     </ul>`;
     res.send(html);
 })
@@ -32,11 +38,18 @@ app.route("/api/users/:id").get((req, res) => {
     return res.json(user)                           // it send the data in json format of the user...
 }).patch((req, res) => {
     // edit the user with id 
-    return res.json({ status: pending });
-})
-.delete((req, res) => {
+    return res.json({ status: 'pending' });
+}).delete((req, res) => {
     // delete the user with id.
-    return res.json({ status: pending });
+    return res.json({ status: 'pending' });
+})
+
+app.post("/api/users", (req, res) => {
+    const body = req.body;
+    users.push({...body, id: users.length + 1});
+    fs.writeFile('./MOCK_DATA.json', JSON.stringify(users), (err, data)=>{
+        return res.json({ status : "success",  id : users.length})
+    });
 })
 
 app.listen(port, () => console.log('server started...'));
