@@ -24,12 +24,20 @@ async function handleRedirectUrl(req, res) {
                     timestamp: Date.now(),
                 },
             },
-        },{ new : true}
-        );
+        }, { new: true }
+    )
     return res.redirect(entry.redirectUrl);
+}
+
+async function handleToGetAnalytics(req, res) {
+    const shortId = req.params.shortId;
+    const result = await URL.findOne({ shortId });
+
+    return res.json({ totalClicks: result.visitHistory.length, analytics: result.visitHistory, UrlName : result.redirectUrl })
 }
 
 module.exports = {
     handleGenerateNewShortUrl,
     handleRedirectUrl,
+    handleToGetAnalytics,
 }
