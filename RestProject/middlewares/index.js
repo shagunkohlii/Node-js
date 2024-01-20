@@ -7,9 +7,10 @@ function logreqres(fileName) {
             fileName,
             `\n${Date.now()} : ${req.ip} : ${req.path}\n`,
             (err, data) => {
+                console.log('error in middleware', err)
                 next();
             })
     };
-}
+};
  
 module.exports = { logreqres, };
