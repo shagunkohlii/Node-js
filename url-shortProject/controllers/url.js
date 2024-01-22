@@ -1,5 +1,6 @@
 const shortid = require('shortid');
-const URL = require('../models/url')
+const URL = require('../models/url');
+
 
 async function handleGenerateNewShortUrl(req, res) {
     const body = req.body;
@@ -10,7 +11,10 @@ async function handleGenerateNewShortUrl(req, res) {
         redirectUrl: body.url,
         visitHistory: [],
     });
-    return res.json({ id: shortID });
+    // return res.json({ id: shortID });
+    return res.render("home", {
+        id: shortID,
+    })
 }
 
 async function handleRedirectUrl(req, res) {
@@ -24,8 +28,12 @@ async function handleRedirectUrl(req, res) {
                     timestamp: Date.now(),
                 },
             },
-        }, { new: true }
+        }
     )
+    if (!entry) {
+        // Handle the case where the entry was not found
+        return res.status(404).send('URL not found');
+    }
     return res.redirect(entry.redirectUrl);
 }
 
@@ -33,8 +41,9 @@ async function handleToGetAnalytics(req, res) {
     const shortId = req.params.shortId;
     const result = await URL.findOne({ shortId });
 
-    return res.json({ totalClicks: result.visitHistory.length, analytics: result.visitHistory, UrlName : result.redirectUrl })
+    return res.json({ totalClicks: result.visitHistory.length, analytics: result.visitHistory, UrlName: result.redirectUrl })
 }
+
 
 module.exports = {
     handleGenerateNewShortUrl,
