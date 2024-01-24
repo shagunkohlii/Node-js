@@ -2,14 +2,15 @@ const User = require('../models/user');
 const { v4: uuidv4 } = require('uuid')
 const { setUser, getUser } = require('../service/auth')
 
+
 async function handleSignup(req, res) {
     const { userName, email, password } = req.body;
-    const result = await User.create({
+    await User.create({
         userName,
         email,
         password,
     });
-    return res.json({result})
+    return res.redirect('/');
 }
 
 async function handleUserLogin(req, res) {
