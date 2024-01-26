@@ -17,7 +17,6 @@ function getUser(token) {
     } catch (error) {
         return null
     }
-
 }
 
 module.exports = {
