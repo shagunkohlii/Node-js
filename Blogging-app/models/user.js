@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 const { createHmac, randomBytes } = require('crypto');
-const { error } = require("console");
+const { createTokenForUser } = require("../services/authentication");
 
 const userSchema = new Schema({
     fullName: {
@@ -21,7 +21,7 @@ const userSchema = new Schema({
     },
     profileImage: {
         type: String,
-        dafault: '/images/avatar.webp'
+        default: '/images/avatar.webp', // Corrected typo here
     },
     role: {
         type: String,
@@ -47,7 +47,7 @@ userSchema.pre('save', function (next) {
     next();
 })
 
-userSchema.static('matchPassword', async function (email, password) {
+userSchema.static('matchPasswordAndGenerateToken', async function (email, password) {
     const user = await this.findOne({ email });
     if (!user) throw new Error('user not found!');
     console.log(user)
@@ -62,7 +62,9 @@ userSchema.static('matchPassword', async function (email, password) {
     if (hashedPassword !== userProvideHashPassword) {
         throw new Error('incorrect password')
     }
-    return user;
+    // return user;
+    const token = createTokenForUser(user);
+    return token;
 })
 
 const USER = model('user', userSchema)
