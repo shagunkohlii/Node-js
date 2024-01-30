@@ -21,7 +21,7 @@ const userSchema = new Schema({
     },
     profileImage: {
         type: String,
-        default: '/images/avatar.webp', // Corrected typo here
+        default: '/images/avt.avif', // Corrected typo here
     },
     role: {
         type: String,
