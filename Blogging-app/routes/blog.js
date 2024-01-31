@@ -7,8 +7,6 @@ const Blog = require('../models/blogs')
 const Comment = require('../models/comments')
 const User = require('../models/user')
 
-
-
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, path.resolve(`./public/uploads/`))
@@ -59,6 +57,5 @@ router.post('/comment/:blogId', async (req, res) => {
     })
     res.redirect(`/blog/${req.params.blogId}`)
 })
-
 
 module.exports = router;
